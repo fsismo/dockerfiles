@@ -1,6 +1,21 @@
 ###########
 # HELPERS #
 ###########
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-16.04-samba/ -t fsismo/ubuntu-16.04-samba:latest -t fsismo/ubuntu-16.04-samba:v0.1 --push
+# RUN
+#  docker run --hostname ubuntu-1604-samba --name ubuntu-16.04-samba \
+#   -v /opt/docker/ubuntu-16.04-samba/shares-config:/etc/samba/smb.conf.d \
+#   -v /opt/docker/ubuntu-16.04-samba/config/global-tunning.conf:/etc/samba/global-tunning.conf \   #optional
+#   -v /var/sambashare:/var/sambashare \
+#   -p 139:139  \
+#   -p 445:445  \
+#   -d \
+#   fsismo/ubuntu-16.04-samba
+# IT BASH
+#  docker container exec -u 0 -it ubuntu-16.04-samba bash
+# STOP and RESET
+#  docker container stop ubuntu-16.04-samba && docker container rm ubuntu-16.04-samba
 
 
 #########
@@ -18,13 +33,19 @@ ARG DEBIAN_FRONTEND=noninteractive
 ############
 # PACKAGES #
 ############
-RUN mkdir /var/sambashare/
+RUN apt update
+RUN apt install -y samba
 
 ############
 # MY STUFF #
 ############
+RUN mkdir /var/sambashare/
 COPY ./opt/utils/services.sh /opt/utils/services.sh
 COPY ./opt/utils/samba-include.sh /opt/utils/samba-include.sh
+COPY ./opt/utils/sample.conf /opt/utils/sample.conf
+RUN addgroup sharegroup && adduser --disabled-password --shell /bin/false --gecos "Samba shareuser" --ingroup sharegroup shareuser
+RUN sed -i "s/dns proxy = no/dns proxy = no\n\n#### Sidecar tunning file ###\n   include = \/etc\/samba\/global-tunning.conf/" /etc/samba/smb.conf
+RUN touch /etc/samba/global-tunning.conf
 RUN chmod +x /opt/utils/services.sh
 RUN chmod +x /opt/utils/samba-include.sh
 

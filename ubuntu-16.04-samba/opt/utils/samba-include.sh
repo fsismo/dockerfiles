@@ -15,6 +15,16 @@ fi
 # create directory smb.conf.d to store samba .conf files
 mkdir -p $SMB_CONF_DIR
 
+# If there isn't any configuration files I copy the sample one
+if [ -z "$(ls -A $SMB_CONF_DIR)" ]; then
+   cp /opt/utils/sample.conf $SMB_CONF_DIR
+fi
+
+mkdir -p $(cat /etc/samba/smb.conf.d/* |grep path |grep sambashare|cut -d = -f 2)
+
+# Set permisions to the sambashares
+chown -R shareuser.sharegroup /var/sambashare/
+
 # populates includes.conf with files in smb.conf.d directory
 ls "${SMB_CONF_DIR}"* | sed -e 's/^/include = /' > $SMB_INCLUDES
-systemctl restart smbd.service
+#systemctl restart smbd.service

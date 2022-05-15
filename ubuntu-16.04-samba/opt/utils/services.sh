@@ -1,2 +1,3 @@
 #!/bin/bash
-/usr/sbin/apache2ctl -D FOREGROUND
+/opt/utils/samba-include.sh
+exec ionice -c 2 smbd -FS --no-process-group </dev/null
