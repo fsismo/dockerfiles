@@ -6,6 +6,7 @@
 # RUN
 #  docker run --hostname mariadb --name mariadb-10.6-focal-auto-backups \
 #   -e MARIADB_ROOT_PASSWORD=Sup3rS3cr3t \
+#   -e BACKUP_RETENTION=30 \
 #   -v /opt/docker/apache-mariadb/mariadb/data:/var/lib/mysql \
 #   -v /opt/docker/apache-mariadb/mariadb/dbbackups:/var/dbbackups  \
 #   -p 3306:3306  \
@@ -15,8 +16,6 @@
 #  docker container exec -u 0 -it mariadb-10.6-focal-auto-backups bash
 # STOP and RESET
 #  docker container stop mariadb-10.6-focal-auto-backups && docker container rm mariadb-10.6-focal-auto-backups
-# SAVE
-#  docker image save -o /mnt/storage/dockerimages/wadmin/mariadb-10.6-focal-auto-backups-v1.0.1.tar mariadb-10.6-focal-auto-backups:v1.0.1
 
 
 #########
@@ -52,8 +51,6 @@ RUN sed -i "s/shopt -s nullglob/shopt -s nullglob\n\/opt\/utils\/services.sh/" /
 # PORTS #
 #########
 EXPOSE 3306
-#EXPOSE 139
-#EXPOSE 445
 
 ###########
 # SERVICE #

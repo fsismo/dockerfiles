@@ -1,0 +1,41 @@
+###########
+# HELPERS #
+###########
+
+
+#########
+# IMAGE #
+#########
+FROM ubuntu:16.04
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+############
+# PACKAGES #
+############
+RUN mkdir /var/sambashare/
+
+############
+# MY STUFF #
+############
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+COPY ./opt/utils/samba-include.sh /opt/utils/samba-include.sh
+RUN chmod +x /opt/utils/services.sh
+RUN chmod +x /opt/utils/samba-include.sh
+
+
+#########
+# PORTS #
+#########
+EXPOSE 139
+EXPOSE 445
+
+###########
+# SERVICE #
+###########
+CMD [ "/opt/utils/services.sh" ]
