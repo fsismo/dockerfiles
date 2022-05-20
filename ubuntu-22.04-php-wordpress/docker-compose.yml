@@ -1,9 +1,4 @@
 # Ubuntu 22.04 PHP 8.1 Wordpress
-#  docker run --hostname ubuntu-2204-php-wordpress --name ubuntu-22.04-php-wordpress \
-#   -v ./opt/docker/www/wordpress:/var/www/wordpress \
-#   -p 80:80  \
-#   -d \
-#   fsismo/ubuntu-22.04-php-wordpress
 version: '3.1'
 services:
   wordpress:
