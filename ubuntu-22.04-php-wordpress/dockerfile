@@ -1,0 +1,50 @@
+###########
+# HELPERS #
+###########
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-php-wordpress/ -t fsismo/ubuntu-22.04-php-wordpress:latest -t fsismo/ubuntu-22.04-php-wordpress:v0.1 --push
+# RUN
+#  docker run --hostname ubuntu-2204-php-wordpress --name ubuntu-22.04-php-wordpress \
+#   -v ./wordpress:/var/www/wordpress \
+#   -p 80:80  \
+#   -d \
+#   fsismo/ubuntu-22.04-php-wordpress
+# IT BASH
+#  docker container exec -u 0 -it ubuntu-22.04-php-wordpress bash
+# STOP and RESET
+#  sudo docker container stop ubuntu-22.04-php-wordpress && sudo docker container rm ubuntu-22.04-php-wordpress
+
+
+#########
+# IMAGE #
+#########
+FROM ubuntu:22.04
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+############
+# PACKAGES #
+############
+RUN apt update
+RUN apt install -y apache2 curl ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
+
+############
+# MY STUFF #
+############
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+
+#########
+# PORTS #
+#########
+EXPOSE 80
+
+###########
+# SERVICE #
+###########
+CMD [ "/opt/utils/services.sh" ]
