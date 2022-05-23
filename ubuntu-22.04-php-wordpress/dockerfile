@@ -5,7 +5,7 @@
 #  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-php-wordpress/ -t fsismo/ubuntu-22.04-php-wordpress:latest -t fsismo/ubuntu-22.04-php-wordpress:v0.1 --push
 # RUN
 #  docker run --hostname ubuntu-2204-php-wordpress --name ubuntu-22.04-php-wordpress \
-#   -v ./wordpress:/var/www/wordpress \
+#   -v /var/docker/www/wordpress:/var/www/wordpress \
 #   -p 80:80  \
 #   -d \
 #   fsismo/ubuntu-22.04-php-wordpress
