@@ -37,15 +37,14 @@ RUN apt-get update
 RUN apt install cron
 
 ############
-# MY STUFF #
+# MY STUFF #q
 ############
 COPY ./opt/dbbackup /opt/dbbackup
 COPY ./opt/utils/services.sh /opt/utils/services.sh
 COPY ./etc/cron.d/* /etc/cron.d/
 RUN chmod +x /opt/dbbackup/*.sh
 RUN chmod +x /opt/utils/services.sh
-RUN sed -i "s/shopt -s nullglob/shopt -s nullglob\n\/opt\/utils\/services.sh/" /usr/local/bin/docker-entrypoint.sh
-
+RUN sed -i "s/\#\!\/bin\/bash/\#\!\/bin\/bash\n\/opt\/utils\/services.sh > \/dev\/null 2>\&1 \&/" /usr/local/bin/docker-entrypoint.sh
 
 #########
 # PORTS #
