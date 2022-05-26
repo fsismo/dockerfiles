@@ -1,3 +1,3 @@
-MAILTO="" 
-#m	h	d	m	wd	usr     cmd
-0   3   *   *   *	root    /opt/dbbackup/do-backup.sh
+MAILTO=""
+#m      h       d	m	wd 	usr    	cmd
+00      03      *	*	*	root	/opt/utils/backup-www-servers.sh
