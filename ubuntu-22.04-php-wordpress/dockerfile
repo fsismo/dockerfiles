@@ -32,10 +32,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 ############
 RUN apt update
 RUN apt install -y apache2 curl ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
+RUN a2enmod rewrite
 
 ############
 # MY STUFF #
 ############
+COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./opt/utils/services.sh /opt/utils/services.sh
 RUN chmod +x /opt/utils/services.sh
 
