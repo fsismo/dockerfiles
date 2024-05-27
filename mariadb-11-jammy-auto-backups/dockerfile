@@ -1,0 +1,58 @@
+###########
+# HELPERS #
+###########
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/mariadb-jammy-auto-backups/ -t fsismo/mariadb-jammy-auto-backups:latest -t fsismo/mariadb-jammy-auto-backups:rc11.3.1 --push
+# RUN
+#  docker run --hostname mariadb --name mariadb-jammy-auto-backups \
+#   -e MARIADB_ROOT_PASSWORD=Sup3rS3cr3t \
+#   -e BACKUP_RETENTION=30 \
+#   -v /opt/docker/apache-mariadb/mariadb/data:/var/lib/mysql \
+#   -v /opt/docker/apache-mariadb/mariadb/dbbackups:/var/dbbackups  \
+#   -p 3306:3306  \
+#   -d \
+#   mariadb-jammy-auto-backups
+# IT BASH
+#  docker container exec -u 0 -it mariadb-jammy-auto-backups bash
+# STOP and RESET
+#  docker container stop mariadb-jammy-auto-backups && docker container rm mariadb-jammy-auto-backups
+
+
+#########
+# IMAGE #
+#########
+FROM  mariadb:11-jammy
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+############
+# PACKAGES #
+############
+RUN apt-get update
+RUN apt install cron
+
+############
+# MY STUFF #q
+############
+COPY ./opt/dbbackup /opt/dbbackup
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+COPY ./etc/cron.d/* /etc/cron.d/
+RUN chmod +x /opt/dbbackup/*.sh
+RUN chmod +x /opt/utils/services.sh
+#RUN sed -i "s/\#\!\/bin\/bash/\#\!\/bin\/bash\n\/opt\/utils\/services.sh \> \/dev\/null 2\>\&1/" /usr/local/bin/docker-entrypoint.sh
+RUN sed -i "s/shopt -s nullglob/shopt -s nullglob\n\/opt\/utils\/services.sh \> \/dev\/null 2\>\&1/" /usr/local/bin/docker-entrypoint.sh
+#########
+# PORTS #
+#########
+EXPOSE 3306
+
+###########
+# SERVICE #
+###########
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["mariadbd"]
