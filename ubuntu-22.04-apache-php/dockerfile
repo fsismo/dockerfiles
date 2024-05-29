@@ -1,0 +1,67 @@
+###########
+# HELPERS #
+###########
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-apache-php/ -t fsismo/ubuntu-22.04-apache-php:latest -t fsismo/ubuntu-22.04-apache-php:v0.1 --push
+# RUN
+#  docker run --hostname ubuntu-22.04-apache-php --name ubuntu-22.04-apache-php \
+#   -v /var/docker/www:/var/www \
+#   -p 80:80  \
+#   -d \
+#   fsismo/ubuntu-22.04-apache-php
+# IT BASH
+#  docker container exec -u 0 -it ubuntu-22.04-apache-php bash
+# STOP and RESET
+#  sudo docker container stop ubuntu-22.04-apache-php && sudo docker container rm ubuntu-22.04-apache-php
+
+#########
+# IMAGE #
+#########
+FROM ubuntu:22.04
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+############
+# PACKAGES #
+############
+RUN apt update
+RUN apt install -y apache2 curl ghostscript libapache2-mod-php libapache2-mod-security2 php php-apcu php-bcmath php-curl php-gd php-gmp php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
+RUN a2enmod rewrite
+
+
+############
+# MY STUFF #
+############
+COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/memory_limit = 128M/memory_limit = 2048M/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.enable=1/opcache.enable=1/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=8/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=10000/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=128/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.save_comments=1/opcache.save_comments=1/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=1/' /etc/php/8.1/apache2/php.ini
+
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/memory_limit = 128M/memory_limit = 2048M/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.enable=1/opcache.enable=1/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=8/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=10000/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=128/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.save_comments=1/opcache.save_comments=1/' /etc/php/8.1/cli/php.ini
+RUN sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=1/' /etc/php/8.1/cli/php.ini
+
+#########
+# PORTS #
+#########
+EXPOSE 80
+
+###########
+# SERVICE #
+###########
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
