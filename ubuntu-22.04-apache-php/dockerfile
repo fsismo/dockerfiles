@@ -2,7 +2,7 @@
 # HELPERS #
 ###########
 # DOCKER BUILD
-#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-apache-php/ -t fsismo/ubuntu-22.04-apache-php:latest -t fsismo/ubuntu-22.04-apache-php:v0.1 --push
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-apache-php/ -t fsismo/ubuntu-22.04-apache-php:latest -t fsismo/ubuntu-22.04-apache-php:$(date +"%Y%m%d-%H%M") --push
 # RUN
 #  docker run --hostname ubuntu-22.04-apache-php --name ubuntu-22.04-apache-php \
 #   -v /var/docker/www:/var/www \
@@ -30,14 +30,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 # PACKAGES #
 ############
 RUN apt update
-RUN apt install -y apache2 curl ghostscript libapache2-mod-php libapache2-mod-security2 php php-apcu php-bcmath php-curl php-gd php-gmp php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
+RUN apt install -y apache2 cron curl ghostscript libapache2-mod-php libapache2-mod-security2 php php-apcu php-bcmath php-curl php-gd php-gmp php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
 RUN a2enmod rewrite
+RUN a2enmod headers
+RUN a2enmod env
+RUN a2enmod dir
+RUN a2enmod mime
+RUN a2enmod security2
 
 
 ############
 # MY STUFF #
 ############
 COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+
 RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/memory_limit = 128M/memory_limit = 2048M/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/;opcache.enable=1/opcache.enable=1/' /etc/php/8.1/apache2/php.ini
@@ -55,6 +63,7 @@ RUN sed -i 's/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files
 RUN sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=128/' /etc/php/8.1/cli/php.ini
 RUN sed -i 's/;opcache.save_comments=1/opcache.save_comments=1/' /etc/php/8.1/cli/php.ini
 RUN sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=1/' /etc/php/8.1/cli/php.ini
+RUN echo apc.enable_cli = 1 >> /etc/php/8.1/cli/conf.d/20-apcu.ini
 
 #########
 # PORTS #
@@ -64,4 +73,5 @@ EXPOSE 80
 ###########
 # SERVICE #
 ###########
-ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+#ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT [ "/opt/utils/services.sh" ]
