@@ -1,0 +1,56 @@
+###########
+# HELPERS #
+###########
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-24.04-postfix-smtp/ -t fsismo/ubuntu-24.04-postfix-smtp:latest -t fsismo/ubuntu-24.04-postfix-smtp:v0.1.$(date +"%Y%m%d-%H%M") --push
+# RUN
+#  docker run --hostname ubuntu-24.04-postfix-smtp --name ubuntu-24.04-postfix-smtp \
+#   -p 25:25  \
+#   -d \
+#   fsismo/ubuntu-24.04-postfix-smtp
+# IT BASH
+#  docker container exec -u 0 -it ubuntu-24.04-postfix-smtp bash
+# STOP and DELETE
+#  sudo docker container stop ubuntu-24.04-postfix-smtp && sudo docker container rm ubuntu-24.04-postfix-smtp
+
+
+#########
+# IMAGE #
+#########
+FROM ubuntu:24.04
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+ARG SMTP_DOMAIN
+ARG SMTP_HOSTNAME
+ARG SMTP_NETWORK
+ARG SMTP_ROOT_EMAIL
+
+############
+# PACKAGES #
+############
+RUN apt update
+RUN echo "postfix postfix/main_mailer_type select Internet Site"      | debconf-set-selections
+RUN echo "postfix postfix/mailname         string your.hostname3.com" | debconf-set-selections
+RUN apt install -y postfix 
+
+############
+# MY STUFF #
+############
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+
+
+#########
+# PORTS #
+#########
+EXPOSE 25
+
+###########
+# SERVICE #
+###########
+
+CMD ["/opt/utils/services.sh"]

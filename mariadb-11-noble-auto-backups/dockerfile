@@ -2,7 +2,7 @@
 # HELPERS #
 ###########
 # DOCKER BUILD
-#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/mariadb-11-jammy-auto-backups/ -t fsismo/mariadb-11-jammy-auto-backups:latest -t fsismo/mariadb-11-jammy-auto-backups:11.$(date +"%Y%m%d-%H%M") --push
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/mariadb-11-noble-auto-backups/ -t fsismo/mariadb-11-noble-auto-backups:latest -t fsismo/mariadb-11-noble-auto-backups:11.$(date +"%Y%m%d-%H%M") --push
 # RUN
 #  docker run --hostname mariadb --name mariadb-jammy-auto-backups \
 #   -e MARIADB_ROOT_PASSWORD=Sup3rS3cr3t \
@@ -21,7 +21,7 @@
 #########
 # IMAGE #
 #########
-FROM  mariadb:11-jammy
+FROM  mariadb:11-noble
 
 ########################
 # ENVIROMENT VARIABLES #
@@ -34,7 +34,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # PACKAGES #
 ############
 RUN apt-get update
-RUN apt install cron
+RUN apt install cron -y
 
 ############
 # MY STUFF #q

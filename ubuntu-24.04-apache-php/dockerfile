@@ -2,7 +2,7 @@
 # HELPERS #
 ###########
 # DOCKER BUILD
-#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-24.04-apache-php/ -t fsismo/ubuntu-24.04-apache-php:latest -t fsismo/ubuntu-24.04-apache-php:v0.1 --push
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-24.04-apache-php/ -t fsismo/ubuntu-24.04-apache-php:latest -t fsismo/ubuntu-24.04-apache-php:v0.2.$(date +"%Y%m%d-%H%M") --push
 # RUN
 #  docker run --hostname ubuntu-24.04-apache-php --name ubuntu-24.04-apache-php \
 #   -v /var/docker/www:/var/www \
@@ -31,15 +31,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 # PACKAGES #
 ############
 RUN apt update
-RUN apt install -y apache2 curl ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip
+RUN apt install -y apache2 curl ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-redis php-xml php-zip
 RUN a2enmod rewrite
 
 ############
 # MY STUFF #
 ############
 COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
-#COPY ./opt/utils/services.sh /opt/utils/services.sh
-#RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/apache2/php.ini
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.3/apache2/php.ini
+RUN sed -i 's/access.log combined/access.log proxy/' /etc/apache2/sites-enabled/000-default.conf
+RUN echo 'ServerTokens Prod' | tee -a /etc/apache2/apache2.conf
+RUN echo 'ServerSignature Off' | tee -a /etc/apache2/apache2.conf
+RUN echo 'LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\"" proxy' | tee -a /etc/apache2/apache2.conf
+
+
 #RUN chmod +x /opt/utils/services.sh
 
 #########
@@ -50,6 +57,5 @@ EXPOSE 80
 ###########
 # SERVICE #
 ###########
-#CMD [ "/opt/utils/services.sh" ]
-#CMD [ "/usr/sbin/apache2ctl -D FOREGROUND" ]
-ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+#ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT [ "/opt/utils/services.sh" ]

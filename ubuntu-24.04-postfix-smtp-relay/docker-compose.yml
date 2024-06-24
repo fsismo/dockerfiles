@@ -1,0 +1,19 @@
+# Ubuntu 24.04 - Postfix - Relay (Google Workspace)
+version: '3.8'
+services:
+  smtp:
+    image: 'fsismo/ubuntu-24.04-postfix-smtp-relay:latest'
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    ports:
+      - '25:25'
+    environment:
+      SMTP_NETWORK: ${SMTP_NETWORK}
+      SMTP_HOSTNAME: ${SMTP_HOSTNAME}
+      SMTP_EMAIL: ${SMTP_EMAIL}
+      SMTP_EMAIL_PASSWORD: ${SMTP_EMAIL_PASSWORD}
+      SMTP_DOMAIN: ${SMTP_DOMAIN}
+      SMTP_SRV: ${SMTP_SRV}
+      SMTP_PORT: ${SMTP_PORT}

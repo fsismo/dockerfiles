@@ -1,9 +1,4 @@
 #!/bin/bash
-mkdir -p /var/www/html
-rm -r /var/www/html/index.html
-if [ -z "$(ls -A /var/www/html)" ]; then
-    curl https://wordpress.org/latest.tar.gz | tar zx -C /tmp/ 
-    mv /tmp/wordpress/* /var/www/html
-    chown -R www-data.www-data /var/www/html
-fi
+ln -sf /proc/$$/fd/1 /var/log/apache2/access.log
+ln -sf /proc/$$/fd/2 /var/log/apache2/error.log
 apachectl -D FOREGROUND
