@@ -54,7 +54,7 @@ RUN echo 'LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %s %b \"%{Referer}i\" \
 RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/memory_limit = 128M/memory_limit = 2048M/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/;opcache.enable=1/opcache.enable=1/' /etc/php/8.1/apache2/php.ini
-RUN sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=8/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=16/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=10000/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=128/' /etc/php/8.1/apache2/php.ini
 RUN sed -i 's/;opcache.save_comments=1/opcache.save_comments=1/' /etc/php/8.1/apache2/php.ini
