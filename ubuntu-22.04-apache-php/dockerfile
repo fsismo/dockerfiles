@@ -45,7 +45,6 @@ RUN a2enmod security2
 COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./opt/utils/services.sh /opt/utils/services.sh
 RUN chmod +x /opt/utils/services.sh
-
 RUN sed -i 's/access.log combined/access.log proxy/' /etc/apache2/sites-enabled/000-default.conf
 RUN echo 'ServerTokens Prod' | tee -a /etc/apache2/apache2.conf
 RUN echo 'ServerSignature Off' | tee -a /etc/apache2/apache2.conf
