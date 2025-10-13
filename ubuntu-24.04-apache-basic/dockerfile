@@ -1,0 +1,52 @@
+###########
+# HELPERS #
+###########
+# DOCKER BUILD
+#  docker build  /mnt/storage/dockerfiles/ubuntu-24.04-apache-basic -t ubuntu-24.04-apache-basic:latest -t ubuntu-24.04-apache-basic:$(date +"%Y%m%d-%H%M")
+# RUN
+#  docker run --privileged --hostname ubuntutest --name ubuntu-24.04-apache-basic -d -p 80:80  ubuntu-24.04-apache-basic
+# IT BASH
+#  docker container exec -u 0 -it ubuntu-24.04-apache-basic
+# STOP and RESET
+#  docker container stop ubuntu-24.04-apache-basic && docker container rm ubuntu-24.04-apache-basic
+# SAVE
+#  docker image save -o /mnt/storage/dockerimages/ubuntu-24.04-apache-basic:$(date +"%Y%m%d-%H%M")
+
+
+#########
+# IMAGE #
+#########
+FROM ubuntu:24.04
+
+########################
+# ENVIROMENT VARIABLES #
+########################
+ENV TZ=America/Argentina/Buenos_Aires
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+############
+# PACKAGES #
+############
+RUN apt-get update
+RUN apt-get install -y apache2 apache2-utils tzdata 
+RUN apt-get clean 
+RUN mv /var/www/html/ /var/www/html-old
+
+############
+# MY STUFF #
+############
+COPY ./www /var/www/html
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+
+#########
+# PORTS #
+#########
+EXPOSE 80
+
+###########
+# SERVICE #
+###########
+#ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT [ "/opt/utils/services.sh" ]

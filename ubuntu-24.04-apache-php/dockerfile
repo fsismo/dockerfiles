@@ -22,7 +22,7 @@ FROM ubuntu:24.04
 ########################
 # ENVIROMENT VARIABLES #
 ########################
-ENV TZ=America/Argentina/Buenos_Aires
+ENV TZ="America/Argentina/Buenos_Aires"
 ARG DEBIAN_FRONTEND=noninteractive
 
 
