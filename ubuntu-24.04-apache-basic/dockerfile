@@ -4,7 +4,7 @@
 # DOCKER BUILD
 #  docker build  /mnt/storage/dockerfiles/ubuntu-24.04-apache-basic -t ubuntu-24.04-apache-basic:latest -t ubuntu-24.04-apache-basic:$(date +"%Y%m%d-%H%M")
 # RUN
-#  docker run --privileged --hostname ubuntutest --name ubuntu-24.04-apache-basic -d -p 80:80  ubuntu-24.04-apache-basic
+#  docker run --hostname ubuntutest --name ubuntu-24.04-apache-basic -d -p 80:80  ubuntu-24.04-apache-basic
 # IT BASH
 #  docker container exec -u 0 -it ubuntu-24.04-apache-basic
 # STOP and RESET

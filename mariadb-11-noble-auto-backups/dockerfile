@@ -4,18 +4,18 @@
 # DOCKER BUILD
 #  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/mariadb-11-noble-auto-backups/ -t fsismo/mariadb-11-noble-auto-backups:latest -t fsismo/mariadb-11-noble-auto-backups:11.$(date +"%Y%m%d-%H%M") --push
 # RUN
-#  docker run --hostname mariadb --name mariadb-jammy-auto-backups \
+#  docker run --hostname mariadb --name mariadb-noble-auto-backups \
 #   -e MARIADB_ROOT_PASSWORD=Sup3rS3cr3t \
 #   -e BACKUP_RETENTION=30 \
 #   -v /opt/docker/apache-mariadb/mariadb/data:/var/lib/mysql \
 #   -v /opt/docker/apache-mariadb/mariadb/dbbackups:/var/dbbackups  \
 #   -p 3306:3306  \
 #   -d \
-#   mariadb-jammy-auto-backups
+#   mariadb-noble-auto-backups
 # IT BASH
-#  docker container exec -u 0 -it mariadb-jammy-auto-backups bash
+#  docker container exec -u 0 -it mariadb-noble-auto-backups bash
 # STOP and RESET
-#  docker container stop mariadb-jammy-auto-backups && docker container rm mariadb-jammy-auto-backups
+#  docker container stop mariadb-noble-auto-backups && docker container rm mariadb-noble-auto-backups
 
 
 #########
