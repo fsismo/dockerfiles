@@ -1,0 +1,23 @@
+# MariaDB 12.3 LTS
+services:
+  db:
+    image: fsismo/mariadb-12.3-noble-auto-backups:latest
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - MARIADB_ROOT_PASSWORD=CHANGE_ME
+      - MARIADB_AUTO_UPGRADE=1
+      - BACKUP_RETENTION=30
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/dbbackups:/var/dbbackups
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - TZ=America/Argentina/Buenos_Aires

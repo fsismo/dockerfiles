@@ -1,8 +1,8 @@
-# MariaDB 10.6
+# MariaDB 11
 version: '3.1'
 services:
   db:
-    image: fsismo/mariadb-10.6-focal-auto-backups:latest
+    image: fsismo/mariadb-11-noble-auto-backups:latest
     environment:
       - TZ=America/Argentina/Buenos_Aires
       - MARIADB_ROOT_PASSWORD=S3cr3t0
