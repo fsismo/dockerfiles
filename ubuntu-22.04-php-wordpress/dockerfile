@@ -2,7 +2,7 @@
 # HELPERS #
 ###########
 # DOCKER BUILD
-#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-php-wordpress/ -t fsismo/ubuntu-22.04-php-wordpress:latest -t fsismo/ubuntu-22.04-php-wordpress:v0.1 --push
+#  sudo docker buildx build --pull --no-cache --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-php-wordpress/ -t fsismo/ubuntu-22.04-php-wordpress:latest -t fsismo/ubuntu-22.04-php-wordpress:v0.1 --push
 # RUN
 #  docker run --hostname ubuntu-2204-php-wordpress --name ubuntu-22.04-php-wordpress \
 #   -v /var/docker/www/wordpress:/var/www/wordpress \
@@ -40,6 +40,9 @@ RUN a2enmod rewrite
 COPY ./etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./opt/utils/services.sh /opt/utils/services.sh
 RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/' /etc/php/8.1/apache2/php.ini
+RUN sed -i 's/post_max_size = 8M/post_max_size = 32M/' /etc/php/8.1/apache2/php.ini
+# CVE-2026-115560 mitigation (CERT-EU 2026-018), until a fixed php8.1 package ships
+RUN echo session.upload_progress.enabled = 0 > /etc/php/8.1/apache2/conf.d/99-security.ini
 RUN chmod +x /opt/utils/services.sh
 
 #########
