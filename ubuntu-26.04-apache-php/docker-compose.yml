@@ -1,0 +1,13 @@
+# Ubuntu 26.04 PHP 8.5 Apache
+version: '3.1'
+services:
+  apache-php:
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+    image: fsismo/ubuntu-26.04-apache-php:latest
+    hostname: ubuntu-26.04-apache-php
+    ports:
+      - 80:80
+    restart: always
+    volumes:
+      - ./html:/var/www/html

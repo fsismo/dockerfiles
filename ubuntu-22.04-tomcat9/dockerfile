@@ -1,0 +1,27 @@
+#Create a new Dockerfile for Tomcat 9 on Ubuntu 22.04
+# DOCKER BUILD
+#  sudo docker buildx build --platform linux/amd64,linux/arm64 /mnt/storage/dockerfiles/ubuntu-22.04-tomcat9/ -t fsismo/ubuntu-22.04-tomcat9:latest -t fsismo/ubuntu-22.04-tomcat9:v0.1.$(date +"%Y%m%d-%H%M") --push
+
+# Origin image
+FROM ubuntu:22.04
+
+# Install needed packages and clean up
+RUN apt-get update && apt-get install -y tomcat9 curl wget unzip openjdk-17-jdk curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+#Environment variables can be set here if needed
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV CATALINA_HOME=/usr/share/tomcat9
+ENV CATALINA_BASE=/var/lib/tomcat9
+ENV PATH=$CATALINA_HOME/bin:$PATH
+RUN chmod +x $CATALINA_HOME/bin/catalina.sh
+# MY STUFF
+COPY ./opt/utils/services.sh /opt/utils/services.sh
+RUN chmod +x /opt/utils/services.sh
+
+#Expose default port for Tomcat
+EXPOSE 8080
+
+
+CMD ["/opt/utils/services.sh"]
