@@ -1,3 +1,0 @@
-MAILTO=''
-#m      h	d	m	wd 	usr    	cmd
-30	3	*	*	*	root	/opt/dbbackup/do-backup.sh
